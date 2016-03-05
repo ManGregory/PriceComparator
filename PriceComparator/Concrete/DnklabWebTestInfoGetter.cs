@@ -1,67 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
-using PriceComparator.Utils;
 
 namespace PriceComparator.Concrete
 {
-    class DilaWebTestInfoGetter : WebTestInfoGetter
+    class DnklabWebTestInfoGetter : WebTestInfoGetter
     {
         public override string CompanyName
         {
-            get { return "Dila"; }
+            get { return "DnkLab"; }
         }
 
         protected override WebClient CreateWebClient()
         {
-            return new WebClient {Encoding = Encoding.GetEncoding(1251)};
+            return new WebClient { Encoding = Encoding.GetEncoding(1251) };
         }
 
         protected override decimal GetPrice(HtmlNode testRow)
-        {
+        {            
+            var priceText = testRow.ChildNodes[2].InnerText.Replace('.', ',');
             decimal price;
-            return decimal.TryParse(testRow.ChildNodes[1].ChildNodes[0].InnerText.ToDigitsOnly(), out price)
-                ? price
-                : -1;
+            return Decimal.TryParse(priceText, out price) ? price : -1;
         }
 
         protected override string GetTerm(HtmlNode testRow)
         {
-            return testRow.ChildNodes[1].ChildNodes[2].InnerText;
+            return string.Empty;
         }
 
         protected override string GetName(HtmlNode testRow)
         {
-            return testRow.ChildNodes[0].InnerText;
+            return testRow.ChildNodes[1].InnerText;
         }
 
         protected override string GetCode(HtmlNode testRow)
         {
-            return string.Empty;
+            return testRow.ChildNodes[0].InnerText;
         }
 
         protected override string GetUrgentTerm(HtmlNode testRow)
         {
-            return testRow.ChildNodes[3].ChildNodes[0].ChildNodes[2].InnerText;
+            return string.Empty;
         }
 
         protected override decimal GetUrgentPrice(HtmlNode testRow)
         {
-            decimal price;
-            return Decimal.TryParse(testRow.ChildNodes[3].ChildNodes[0].ChildNodes[0].InnerText, out price)
-                ? price
-                : -1;
+            return -1;
         }
 
         protected override IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc)
         {
-            var testRows = htmlDoc.DocumentNode.SelectNodes("//tr[count(td)=3]");
-            return testRows;
+            return htmlDoc.DocumentNode.SelectNodes("//div[@class='content']//tr[count(td)=3]");
         }
 
-        public DilaWebTestInfoGetter(string url)
+        public DnklabWebTestInfoGetter(string url)
         {
             Url = url;
         }

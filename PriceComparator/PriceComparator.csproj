@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Concrete\DilaWebTestInfoGetter.cs" />
+    <Compile Include="Concrete\DnklabWebTestInfoGetter.cs" />
     <Compile Include="Concrete\SynevoWebTestInfoGetter.cs" />
     <Compile Include="Interfaces\IWebTestInfoGetter.cs" />
     <Compile Include="Program.cs" />

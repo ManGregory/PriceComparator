@@ -22,8 +22,9 @@ namespace PriceComparator
 
         private static IWebTestInfoGetter CreateWebTestInfoGetter()
         {
-            return new SynevoWebTestInfoGetter("http://www.synevo.ua/ru/analizy/zagalnoklinichni-doslidgennia");
+            //return new SynevoWebTestInfoGetter("http://www.synevo.ua/ru/analizy/zagalnoklinichni-doslidgennia");
             //return new DilaWebTestInfoGetter("http://dila.ua/pricelist/");
+            return new DnklabWebTestInfoGetter("http://dnk-lab.com.ua/price.php");
         }
     }
 }
