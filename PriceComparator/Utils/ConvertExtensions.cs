@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PriceComparator
+namespace PriceComparator.Utils
 {
-    interface IWebTestInfoGetter
+    class ConvertExtensions
     {
-        IEnumerable<TestInfo> ProcessTestInfos();        
     }
 }

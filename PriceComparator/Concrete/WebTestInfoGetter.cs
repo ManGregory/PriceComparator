@@ -4,8 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using HtmlAgilityPack;
+using PriceComparator.Interfaces;
 
-namespace PriceComparator
+namespace PriceComparator.Concrete
 {
     abstract class WebTestInfoGetter : IWebTestInfoGetter
     {
@@ -15,13 +16,13 @@ namespace PriceComparator
 
         protected abstract decimal GetPrice(HtmlNode testRow);
 
-        protected abstract double GetTerm(HtmlNode testRow);
+        protected abstract string GetTerm(HtmlNode testRow);
 
         protected abstract string GetName(HtmlNode testRow);
 
         protected abstract string GetCode(HtmlNode testRow);
 
-        protected abstract double GetUrgentTerm(HtmlNode testRow);
+        protected abstract string GetUrgentTerm(HtmlNode testRow);
 
         protected abstract decimal GetUrgentPrice(HtmlNode testRow);
 

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using PriceComparator.Concrete;
+using PriceComparator.Interfaces;
 
 namespace PriceComparator
 {
@@ -13,18 +10,20 @@ namespace PriceComparator
     {
         static void Main(string[] args)
         {
-            IWebTestInfoGetter webTestInfoGetter = new SynevoWebTestInfoGetter(@"http://www.synevo.ua/uk/analizy/gormonalna-panel");
+            IWebTestInfoGetter webTestInfoGetter = CreateWebTestInfoGetter();
             var testInfos = webTestInfoGetter.ProcessTestInfos();
             foreach (var testInfo in testInfos)
             {
                 Console.WriteLine(testInfo.ToString());
             }
+            File.WriteAllLines("1.txt", testInfos.Select(t => t.ToString()));
             Console.ReadKey();
         }
 
-        private static string GerUrl()
+        private static IWebTestInfoGetter CreateWebTestInfoGetter()
         {
-            return @"http://www.synevo.ua/uk/analizy/gormonalna-panel";
+            return new SynevoWebTestInfoGetter("http://www.synevo.ua/ru/analizy/zagalnoklinichni-doslidgennia");
+            //return new DilaWebTestInfoGetter("http://dila.ua/pricelist/");
         }
     }
 }

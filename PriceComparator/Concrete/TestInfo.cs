@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PriceComparator
+namespace PriceComparator.Concrete
 {
     class TestInfo
     {
@@ -19,9 +14,9 @@ namespace PriceComparator
 
         public decimal UrgentPrice { get; set; }
 
-        public double Term { get; set; }
+        public string Term { get; set; }
 
-        public double UrgentTerm { get; set; }
+        public string UrgentTerm { get; set; }
 
         public override string ToString()
         {
