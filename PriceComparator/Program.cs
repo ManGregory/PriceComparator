@@ -24,7 +24,8 @@ namespace PriceComparator
         {
             //return new SynevoWebTestInfoGetter("http://www.synevo.ua/ru/analizy/zagalnoklinichni-doslidgennia");
             //return new DilaWebTestInfoGetter("http://dila.ua/pricelist/");
-            return new DnklabWebTestInfoGetter("http://dnk-lab.com.ua/price.php");
+            //return new DnklabWebTestInfoGetter("http://dnk-lab.com.ua/price.php");
+            return new BioplusWebTestInfoGetter("http://www.bioplus.com.ua/pricelist.html");
         }
     }
 }
