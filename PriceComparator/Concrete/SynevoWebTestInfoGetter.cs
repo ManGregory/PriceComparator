@@ -25,7 +25,7 @@ namespace PriceComparator.Concrete
         protected override decimal GetPrice(HtmlNode testRow)
         {
             decimal price;
-            return Decimal.TryParse(testRow.ChildNodes[5].InnerText.ToDigitsOnly(), out price) ? price : -1;
+            return Decimal.TryParse(testRow.ChildNodes[5].InnerText.DigitsOnly(), out price) ? price : -1;
         }
 
         protected override string GetTerm(HtmlNode testRow)

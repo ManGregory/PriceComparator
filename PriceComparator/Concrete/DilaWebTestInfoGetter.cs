@@ -22,7 +22,7 @@ namespace PriceComparator.Concrete
         protected override decimal GetPrice(HtmlNode testRow)
         {
             decimal price;
-            return decimal.TryParse(testRow.ChildNodes[1].ChildNodes[0].InnerText.ToDigitsOnly(), out price)
+            return decimal.TryParse(testRow.ChildNodes[1].ChildNodes[0].InnerText.DigitsOnly(), out price)
                 ? price
                 : -1;
         }

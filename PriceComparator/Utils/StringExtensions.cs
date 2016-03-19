@@ -8,7 +8,7 @@ namespace PriceComparator.Utils
 {
     static class StringExtensions
     {
-        public static string ToDigitsOnly(this string input)
+        public static string DigitsOnly(this string input)
         {
             return new string(input.Where(char.IsDigit).ToArray());
         }

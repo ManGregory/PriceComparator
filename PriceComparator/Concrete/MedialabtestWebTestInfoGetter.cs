@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
+using PriceComparator.Utils;
 
 namespace PriceComparator.Concrete
 {
@@ -16,22 +14,28 @@ namespace PriceComparator.Concrete
 
         protected override decimal GetPrice(HtmlNode testRow)
         {
-            throw new NotImplementedException();
+            decimal price;
+            return Decimal.TryParse(testRow.ChildNodes[7].InnerText.DigitsOnly(), out price) ? price : -1;
         }
 
         protected override string GetTerm(HtmlNode testRow)
         {
-            throw new NotImplementedException();
+            return testRow.ChildNodes[5].InnerText;
         }
 
         protected override string GetName(HtmlNode testRow)
         {
-            throw new NotImplementedException();
+            return testRow.ChildNodes[3].InnerText;
+        }
+
+        protected override string GetCode(HtmlNode testRow)
+        {
+            return testRow.ChildNodes[1].InnerText;
         }
 
         protected override IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc)
         {
-            throw new NotImplementedException();
+            return htmlDoc.DocumentNode.SelectNodes("//div[@class='price-list']//tr[@class='item']");
         }
 
         public MedialabtestWebTestInfoGetter(string url)
