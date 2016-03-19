@@ -23,5 +23,11 @@ namespace PriceComparator.Concrete
             return string.Format("Name: {0}, Price: {1}, UrgentPrice: {2}, Term: {3}, UrgentTerm: {4}",
                 Name, Price, UrgentPrice, Term, UrgentTerm);
         }
+
+        public bool IsEmpty()
+        {
+            return Price == -1 && UrgentPrice == -1 && 
+                Term.Trim() == string.Empty && UrgentTerm.Trim() == string.Empty;
+        }
     }
 }

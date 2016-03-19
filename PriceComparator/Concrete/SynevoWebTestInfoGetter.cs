@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HtmlAgilityPack;
+using PriceComparator.Utils;
 
 namespace PriceComparator.Concrete
 {
@@ -9,11 +10,6 @@ namespace PriceComparator.Concrete
         public override string CompanyName
         {
             get { return "Synevo"; }
-        }
-
-        private string GetToBuyNodeAttribute(HtmlNode testRow, string attributeName)
-        {
-            return testRow.ChildNodes[9].ChildNodes[1].Attributes[attributeName].Value;
         }
 
         public SynevoWebTestInfoGetter(string url)
@@ -29,7 +25,7 @@ namespace PriceComparator.Concrete
         protected override decimal GetPrice(HtmlNode testRow)
         {
             decimal price;
-            return Decimal.TryParse(GetToBuyNodeAttribute(testRow, "price"), out price) ? price : -1;
+            return Decimal.TryParse(testRow.ChildNodes[5].InnerText.ToDigitsOnly(), out price) ? price : -1;
         }
 
         protected override string GetTerm(HtmlNode testRow)
@@ -39,22 +35,12 @@ namespace PriceComparator.Concrete
 
         protected override string GetName(HtmlNode testRow)
         {
-            return GetToBuyNodeAttribute(testRow, "test-name");
+            return testRow.ChildNodes[3].ChildNodes[0].InnerText;
         }
 
         protected override string GetCode(HtmlNode testRow)
         {
-            return GetToBuyNodeAttribute(testRow, "code");
-        }
-
-        protected override string GetUrgentTerm(HtmlNode testRow)
-        {
-            return string.Empty;
-        }
-
-        protected override decimal GetUrgentPrice(HtmlNode testRow)
-        {
-            return -1;
+            return testRow.ChildNodes[1].InnerText;
         }
     }
 }

@@ -37,11 +37,6 @@ namespace PriceComparator.Concrete
             return testRow.ChildNodes[0].InnerText;
         }
 
-        protected override string GetCode(HtmlNode testRow)
-        {
-            return string.Empty;
-        }
-
         protected override string GetUrgentTerm(HtmlNode testRow)
         {
             return testRow.ChildNodes[3].ChildNodes[0].ChildNodes[2].InnerText;

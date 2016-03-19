@@ -34,16 +34,6 @@ namespace PriceComparator.Concrete
             return string.Empty;
         }
 
-        protected override string GetUrgentTerm(HtmlNode testRow)
-        {
-            return string.Empty;
-        }
-
-        protected override decimal GetUrgentPrice(HtmlNode testRow)
-        {
-            return -1;
-        }
-
         protected override IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc)
         {
             return htmlDoc.DocumentNode.SelectNodes("//div[@class='item-page']//tr[count(td)=3]");

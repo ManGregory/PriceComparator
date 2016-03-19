@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 
 namespace PriceComparator.Concrete
@@ -40,16 +38,6 @@ namespace PriceComparator.Concrete
         protected override string GetCode(HtmlNode testRow)
         {
             return testRow.ChildNodes[0].InnerText;
-        }
-
-        protected override string GetUrgentTerm(HtmlNode testRow)
-        {
-            return string.Empty;
-        }
-
-        protected override decimal GetUrgentPrice(HtmlNode testRow)
-        {
-            return -1;
         }
 
         protected override IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc)

@@ -20,11 +20,20 @@ namespace PriceComparator.Concrete
 
         protected abstract string GetName(HtmlNode testRow);
 
-        protected abstract string GetCode(HtmlNode testRow);
+        protected virtual string GetCode(HtmlNode testRow)
+        {
+            return string.Empty;
+        }
 
-        protected abstract string GetUrgentTerm(HtmlNode testRow);
+        protected virtual string GetUrgentTerm(HtmlNode testRow)
+        {
+            return string.Empty;
+        }
 
-        protected abstract decimal GetUrgentPrice(HtmlNode testRow);
+        protected virtual decimal GetUrgentPrice(HtmlNode testRow)
+        {
+            return -1;
+        }
 
         protected abstract IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc);
 
@@ -40,7 +49,7 @@ namespace PriceComparator.Concrete
 
         protected virtual IEnumerable<TestInfo> ProcessTestInfos(IEnumerable<HtmlNode> testRows)
         {
-            return testRows.Select(CreateTestInfo);
+            return testRows.Select(CreateTestInfo).Where(t => !t.IsEmpty());
         }
 
         protected virtual TestInfo CreateTestInfo(HtmlNode testRow)

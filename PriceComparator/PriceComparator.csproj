@@ -47,7 +47,10 @@
     <Compile Include="Concrete\BioplusWebTestInfoGetter.cs" />
     <Compile Include="Concrete\DilaWebTestInfoGetter.cs" />
     <Compile Include="Concrete\DnklabWebTestInfoGetter.cs" />
+    <Compile Include="Concrete\MedialabtestWebTestInfoGetter.cs" />
+    <Compile Include="Concrete\NikolabWebTestInfoGetter.cs" />
     <Compile Include="Concrete\SynevoWebTestInfoGetter.cs" />
+    <Compile Include="Concrete\UldcWebTestInfoGetter.cs" />
     <Compile Include="Interfaces\IWebTestInfoGetter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
