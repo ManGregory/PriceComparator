@@ -35,7 +35,7 @@ namespace PriceComparator.Concrete
 
         protected override string GetName(HtmlNode testRow)
         {
-            return testRow.ChildNodes[3].ChildNodes[0].InnerText;
+            return testRow.ChildNodes[3].ChildNodes[1].InnerText;
         }
 
         protected override string GetCode(HtmlNode testRow)
