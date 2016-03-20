@@ -45,7 +45,7 @@ namespace PriceComparator.Concrete
         protected override decimal GetUrgentPrice(HtmlNode testRow)
         {
             decimal price;
-            return Decimal.TryParse(testRow.ChildNodes[3].ChildNodes[0].ChildNodes[0].InnerText, out price)
+            return Decimal.TryParse(testRow.ChildNodes[3].ChildNodes[0].ChildNodes[0].InnerText.DigitsOnly(), out price)
                 ? price
                 : -1;
         }

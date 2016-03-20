@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HtmlAgilityPack;
+using PriceComparator.Utils;
 
 namespace PriceComparator.Concrete
 {
@@ -13,7 +14,7 @@ namespace PriceComparator.Concrete
 
         protected override decimal GetPrice(HtmlNode testRow)
         {
-            var priceText = testRow.ChildNodes[5].InnerText.Trim();
+            var priceText = testRow.ChildNodes[5].InnerText.Trim().DigitsOnly();
             decimal price;
             return Decimal.TryParse(priceText, out price) ? price : -1;
         }

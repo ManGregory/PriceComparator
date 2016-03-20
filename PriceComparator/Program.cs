@@ -31,7 +31,7 @@ namespace PriceComparator
             Console.ReadKey();
         }
 
-        private static List<TestInfo> FindSameTestInfos(Dictionary<string, List<TestInfo>> webTestInfos)
+        private static List<Tuple<string, List<TestInfo>>> FindSameTestInfos(Dictionary<string, List<TestInfo>> webTestInfos)
         {
             return null;
         }
