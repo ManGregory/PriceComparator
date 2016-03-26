@@ -1,0 +1,218 @@
+﻿@{
+    ViewBag.Title = "Пошук найближчої медичної лабораторії";
+}
+<h2>@ViewBag.Title.</h2>
+
+@section AddToHead
+{
+    <style>
+        #map-canvas {
+            height: 370px;
+            width: 70%;
+            padding-top: 20px;
+        }
+    </style>
+}
+
+<div class="row">
+    @using (Html.BeginForm("Contact", "Home", FormMethod.Get, new {@class = "form-horizontal", @id = "searchForm"}))
+    {
+        <div class="col-sm-4 col-md-3">
+            <label for="labName" class="control-label">Назва медичної лабораторії: </label>
+        </div>
+        <div class="col-sm-3">
+            <select name="labName" class="form-control" onchange=" processLabNameChange(this) ">
+                <option>Synevo</option>
+                <option>Dila</option>
+                <option>DNK</option>
+                <option>Bioplus</option>
+                <option>ULDC</option>
+                <option>Nikolab</option>
+                <option>Medlabtest</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <input name="searchInput" placeholder="Пошук" class="form-control" />
+        </div>
+        <div class="col-sm-2 col-md-1">
+            <input type="button" value="Пошук" class="btn btn-default" onclick=" processSearchForm(this) " />
+        </div>
+    }
+</div>
+
+<div class="row" style="padding-top: 20px;">
+    <div id="map-canvas" class="col-sm-7 col-md-7">
+
+    </div>
+    <div class="col-sm-3 col-md-3">
+        <h5>Результати пошуку: </h5>
+        <ul id="searchResults">
+        </ul>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script>
+        function initialize() {
+            var position = new google.maps.LatLng(50.510702, 30.621817);
+            var mapCanvas = document.getElementById('map-canvas');
+            var mapOptions = {
+                center: position,
+                zoom: 16,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(mapCanvas, mapOptions);
+            geocoder = new google.maps.Geocoder();
+            searchMarkers = new Array();
+            searchCircles = new Array();
+            labMarkers = {
+                'synevo': [
+                    new google.maps.Marker({
+                        position: new google.maps.LatLng(50.510702, 30.621817),
+                        map: map,
+                        title: "Київ, вулиця Закревського, 51/2"
+                    })
+                ],
+                'dila': [
+                    new google.maps.Marker({
+                        position: new google.maps.LatLng(50.411529, 30.655912),
+                        map: map,
+                        title: 'ул. Вербицкого, 5, каб. 401 (4 этаж)'
+                    }),
+                    new google.maps.Marker({
+                        position: new google.maps.LatLng(50.426882, 30.462425),
+                        map: map,
+                        title: 'пр-т Воздухофлотский, 42'
+                    })
+                ],
+                'dnk': [],
+                'bioplus': [],
+                'uldc': [],
+                'nikolab': [],
+                'medlabtest': []
+            }
+        };
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+        function getSearchForm() {
+            return document.getElementById("searchForm");
+        }
+
+        function clearSearchMarkers() {
+            for (var i = 0; i < searchMarkers.length; i++) {
+                searchMarkers[i].setMap(null);
+            }
+        }
+
+        function clearSearchCircles() {
+            for (var i = 0; i < searchCircles.length; i++) {
+                searchCircles[i].setMap(null);
+            }
+        }
+
+        function clearMap() {
+            clearSearchMarkers();
+            clearSearchCircles();
+            $("#searchResults").empty();
+        }
+
+        function processSearchForm(e) {
+            if (e.preventDefault) e.preventDefault();
+            clearMap();
+            var address = getSearchForm().searchInput.value;
+            geocoder.geocode({ 'address': address }, function(results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng())
+                    });
+                    searchMarkers.push(marker);
+                    map.setCenter(marker.position);
+                    showClosestMarkers(marker.position.lat(), marker.position.lng(), 1000);
+                }
+            });
+            return false;
+        }
+
+        function processLabNameChange(e) {
+            if (e.preventDefault) e.preventDefault();
+            clearMap();
+            var labNameSelect = getSearchForm().labName;
+            for (var i = 0; i < labNameSelect.options.length; i++) {
+                var labName = labNameSelect.options[i].value;
+                var markers = labMarkers[labName.toLowerCase()];
+                for (var j = 0; j < markers.length; j++) {
+                    markers[j].setMap(labNameSelect.options[i].selected ? map : null);
+                }
+                if (markers.length > 0 && markers[0].map != null) {
+                    map.setCenter(markers[0].position);
+                }
+            }
+            return false;
+        }
+
+        function getMarkers() {
+            var markers = new Array();
+            for (key in labMarkers) {
+                for (var i = 0; i < labMarkers[key].length; i++) {
+                    markers.push(labMarkers[key][i]);
+                }
+            }
+            return markers;
+        }
+
+        function addSearchResult(marker) {
+            marker.setMap(map);
+            map.setCenter(marker.position);
+            
+            $("#searchResults").append('<li>' + marker.title + '</li>');
+        }
+
+        function showClosestMarkers(lat1, lon1, maximumRadius) {
+            var pi = Math.PI;
+            var R = 6371; //equatorial radius
+            
+            var markers = getMarkers();
+
+            for (var i = 0; i < markers.length; i++) {
+                var lat2 = markers[i].position.lat();
+                var lon2 = markers[i].position.lng();
+
+                var chLat = lat2 - lat1;
+                var chLon = lon2 - lon1;
+
+                var dLat = chLat * (pi / 180);
+                var dLon = chLon * (pi / 180);
+
+                var rLat1 = lat1 * (pi / 180);
+                var rLat2 = lat2 * (pi / 180);
+
+                var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(rLat1) * Math.cos(rLat2);
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                var d = R * c * 1000;
+                
+                if (d < maximumRadius) {                    
+                    addSearchResult(markers[i]);
+                } else {
+                    markers[i].setMap(null);
+                }
+
+                var searchCircle = new google.maps.Circle({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#ffb3b3',
+                    fillOpacity: 0.35,
+                    map: map,
+                    center: new google.maps.LatLng(lat1, lon1),
+                    radius: maximumRadius
+                });
+                searchCircles.push(searchCircle);
+            }
+        }
+    </script>
+}
