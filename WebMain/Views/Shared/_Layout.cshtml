@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - порівняння цін мед. лабораторій</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @if (IsSectionDefined(("AddToHead")))
@@ -20,13 +20,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Пошук медичної лабораторії", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Головна", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Вартість", "About", "Home")</li>
+                    <li>@Html.ActionLink("Місцезнаходження", "Contact", "Home")</li>
                 </ul>
             </div>
         </div>
@@ -35,7 +34,8 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>Роботу виконав: Іванов Іван Іванович</p>
+            <p>&copy; @DateTime.Now.Year - порівняння цін мед. лабораторій</p>
         </footer>
     </div>
 
