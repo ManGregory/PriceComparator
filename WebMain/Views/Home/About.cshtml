@@ -1,7 +1,12 @@
 ﻿@{
     ViewBag.Title = "About";
 }
+
+@model Dictionary<string, List<PriceComparator.Concrete.TestInfo>>
+
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 
 <p>Use this area to provide additional information.</p>
+
+<p>@Model.Count</p>

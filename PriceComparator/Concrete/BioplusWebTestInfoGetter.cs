@@ -5,7 +5,7 @@ using PriceComparator.Utils;
 
 namespace PriceComparator.Concrete
 {
-    class BioplusWebTestInfoGetter : WebTestInfoGetter
+    public class BioplusWebTestInfoGetter : WebTestInfoGetter
     {
         public override string CompanyName
         {
@@ -40,9 +40,8 @@ namespace PriceComparator.Concrete
             return htmlDoc.DocumentNode.SelectNodes("//div[@class='item-page']//tr[count(td)=3]");
         }
 
-        public BioplusWebTestInfoGetter(string url)
+        public BioplusWebTestInfoGetter(string pathToPredefined, string url) : base(pathToPredefined, url)
         {
-            Url = url;
         }
     }
 }

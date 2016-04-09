@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,11 +9,13 @@ using PriceComparator.Interfaces;
 
 namespace PriceComparator.Concrete
 {
-    abstract class WebTestInfoGetter : IWebTestInfoGetter
-    {
+    public abstract class WebTestInfoGetter : IWebTestInfoGetter
+    {        
         public string Url { get; set; }
 
         public virtual string CompanyName { get; set; }
+
+        protected IEnumerable<TestInfo> PredefinedTestInfos;
 
         protected abstract decimal GetPrice(HtmlNode testRow);
 
@@ -37,9 +40,15 @@ namespace PriceComparator.Concrete
 
         protected abstract IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc);
 
+        protected WebTestInfoGetter(string pathToPredefined, string url)
+        {
+            Url = url;
+            PredefinedTestInfos = PredefinedTestGetter.GetPredefinedTestInfos(pathToPredefined);
+        }
+
         public IEnumerable<TestInfo> ProcessTestInfos()
         {
-            var testInfos = new List<TestInfo>();
+            var testInfos = new List<TestInfo>();            
             using (var client = CreateWebClient())
             {
                 testInfos.AddRange(ProcessTestInfos(GetHtmlTestRows(CreateHtmlDocument(client))));
@@ -49,12 +58,12 @@ namespace PriceComparator.Concrete
 
         protected virtual IEnumerable<TestInfo> ProcessTestInfos(IEnumerable<HtmlNode> testRows)
         {
-            return testRows.Select(CreateTestInfo).Where(t => !t.IsEmpty());
+            return testRows.Select(CreateTestInfo).Where(t => t!= null && !t.IsEmpty());
         }
 
         protected virtual TestInfo CreateTestInfo(HtmlNode testRow)
         {
-            return new TestInfo
+            var testInfo = new TestInfo
             {
                 CompanyName = CompanyName,
                 Code = GetCode(testRow),
@@ -64,6 +73,20 @@ namespace PriceComparator.Concrete
                 UrgentPrice = GetUrgentPrice(testRow),
                 UrgentTerm = GetUrgentTerm(testRow)
             };
+            var predefinedTestInfo = PredefinedTestGetter.Find(testInfo, PredefinedTestInfos);
+            if (predefinedTestInfo != null)
+            {
+                MergeTestInfo(testInfo, predefinedTestInfo);
+                return testInfo;
+            }
+            return null;
+        }
+
+        protected void MergeTestInfo(TestInfo testInfo, TestInfo predefinedTestInfo)
+        {
+            testInfo.InnerCode = predefinedTestInfo.InnerCode;
+            testInfo.Category = predefinedTestInfo.Category;
+            testInfo.SubCategory = predefinedTestInfo.SubCategory;
         }
 
         protected virtual HtmlDocument CreateHtmlDocument(WebClient client)

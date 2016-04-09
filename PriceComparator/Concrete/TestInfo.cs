@@ -2,7 +2,7 @@
 
 namespace PriceComparator.Concrete
 {
-    class TestInfo
+    public class TestInfo
     {
         public string CompanyName { get; set; }
 
@@ -17,6 +17,12 @@ namespace PriceComparator.Concrete
         public string Term { get; set; }
 
         public string UrgentTerm { get; set; }
+
+        public string InnerCode { get; set; }
+
+        public string Category { get; set; }
+
+        public string SubCategory { get; set; }
 
         public override string ToString()
         {

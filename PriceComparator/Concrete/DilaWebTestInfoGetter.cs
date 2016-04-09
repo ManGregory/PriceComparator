@@ -7,7 +7,7 @@ using PriceComparator.Utils;
 
 namespace PriceComparator.Concrete
 {
-    class DilaWebTestInfoGetter : WebTestInfoGetter
+    public class DilaWebTestInfoGetter : WebTestInfoGetter
     {
         public override string CompanyName
         {
@@ -56,9 +56,8 @@ namespace PriceComparator.Concrete
             return testRows;
         }
 
-        public DilaWebTestInfoGetter(string url)
+        public DilaWebTestInfoGetter(string pathToPredefined, string url) : base(pathToPredefined, url)
         {
-            Url = url;
         }
     }
 }

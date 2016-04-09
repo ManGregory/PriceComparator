@@ -6,11 +6,11 @@ using HtmlAgilityPack;
 
 namespace PriceComparator.Concrete
 {
-    class DnklabWebTestInfoGetter : WebTestInfoGetter
+    public class DnklabWebTestInfoGetter : WebTestInfoGetter
     {
         public override string CompanyName
         {
-            get { return "DnkLab"; }
+            get { return "Dnk"; }
         }
 
         protected override WebClient CreateWebClient()
@@ -45,9 +45,8 @@ namespace PriceComparator.Concrete
             return htmlDoc.DocumentNode.SelectNodes("//div[@class='content']//tr[count(td)=3]");
         }
 
-        public DnklabWebTestInfoGetter(string url)
+        public DnklabWebTestInfoGetter(string pathToPredefined, string url) : base(pathToPredefined, url)
         {
-            Url = url;
         }
     }
 }

@@ -7,7 +7,7 @@ using HtmlAgilityPack;
 
 namespace PriceComparator.Concrete
 {
-    class NikolabWebTestInfoGetter : WebTestInfoGetter
+    public class NikolabWebTestInfoGetter : WebTestInfoGetter
     {
         public override string CompanyName
         {
@@ -40,9 +40,8 @@ namespace PriceComparator.Concrete
             return htmlDoc.DocumentNode.SelectNodes("//div[@class='entry-content article']//tr[count(td)=4]");
         }
 
-        public NikolabWebTestInfoGetter(string url)
+        public NikolabWebTestInfoGetter(string pathToPredefined, string url) : base(pathToPredefined, url)
         {
-            Url = url;
         }
     }
 }
