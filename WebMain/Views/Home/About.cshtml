@@ -1,12 +1,101 @@
-﻿@{
-    ViewBag.Title = "About";
+﻿@using Antlr.Runtime.Tree
+@model WebMain.Models.PriceViewModel
+
+<h3 class="text-center">Клінічні дослідження, що проводяться в медичних лабораторіях міста Києва</h3>
+<br/>
+<div class="row">
+    <div class="col-md-2">
+        Назва лабораторії
+    </div>
+    <div class="col-md-2">
+        Перелік панелей медичних досліджень
+    </div>
+    <div class="col-md-2">
+        Перелік груп медичних досліджень
+    </div>
+    <div class="col-md-3">
+        Перелік медичних досліджень
+    </div>
+</div>
+<div class="row">
+    @using (Html.BeginForm("About", "Home", FormMethod.Get, new { @role = "form", @class = "" }))
+    {
+        <div class="col-md-2">
+            @Html.DropDownListFor(m => m.Labs, Model.Labs, string.Empty, new { @class = "form-control" })
+        </div>
+        <div class="col-md-2">
+            @Html.DropDownListFor(m => m.Categories, Model.Categories, string.Empty, new { @class = "form-control" })
+        </div>
+        <div class="col-md-2">
+            @Html.DropDownListFor(m => m.SubCategories, Model.SubCategories, string.Empty, new { @class = "form-control" })
+        </div>
+        <div class="col-md-3">
+            @Html.DropDownListFor(m => m.Tests, Model.Tests, string.Empty, new { @class = "form-control" })
+        </div>
+        <div class="col-md-3">
+            <input type="submit" value="Пошук" class="btn btn-default" />
+            <button type="button" class="btn btn-default" onclick=" clearForm() ">Новий пошук</button>
+        </div>
+    }
+</div>
+<br/>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered table-hover">
+            <caption>
+                <h3>Вартість та терміни виконнаня лабораторних досліджень в м. Київ</h3>
+            </caption>
+            <thead>
+                <tr>
+                    <td><b>Назва медичної лабораторії</b></td>
+                    <td><b>Назва клінічного дослідження</b></td>
+                    <td><b>Звичайне виконання</b></td>
+                    <td><b>Вартість клінічного дослідження звичайного</b></td>
+                    <td><b>Термінове виконання</b></td>
+                    <td><b>Вартість клінічного дослідження термінового</b></td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var test in Model.FilteredTests)
+                {
+                    <tr>
+                        <td><b>@test.CompanyName</b></td>
+                        <td>@test.Name</td>
+                        <td>@test.Term</td>
+                        <td>
+                            @if (test.Price != -1)
+                            {
+                                @test.Price
+                            }
+                        </td>
+                        <td>@test.UrgentTerm</td>
+                        <td>
+                            @if (test.UrgentPrice != -1)
+                            {
+                                @test.UrgentPrice
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        function clearForm()
+        {
+            $("#Labs option:selected").prop("selected", false);
+            $("#Labs option:first").prop("selected", "selected");
+            $("#Categories option:selected").prop("selected", false);
+            $("#Categories option:first").prop("selected", "selected");
+            $("#SubCategories option:selected").prop("selected", false);
+            $("#SubCategories option:first").prop("selected", "selected");
+            $("#Tests option:selected").prop("selected", false);
+            $("#Tests option:first").prop("selected", "selected");
+            return false;
+        }
+    </script>
 }
-
-@model Dictionary<string, List<PriceComparator.Concrete.TestInfo>>
-
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
-
-<p>Use this area to provide additional information.</p>
-
-<p>@Model.Count</p>

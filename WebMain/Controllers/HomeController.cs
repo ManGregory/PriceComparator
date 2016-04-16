@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Razor.Parser;
 using Microsoft.Ajax.Utilities;
 using PriceComparator.Concrete;
 using PriceComparator.Interfaces;
+using WebMain.Models;
 
 namespace WebMain.Controllers
 {
@@ -27,16 +30,22 @@ namespace WebMain.Controllers
             };
         }
 
+        private Dictionary<string, List<TestInfo>> _cachedWebTestInfos = null;
+
         private Dictionary<string, List<TestInfo>> GetTestInfos()
         {
-            IEnumerable<IWebTestInfoGetter> webTestInfoGetters = CreateWebTestInfoGetters();
-            var webTestInfos = new Dictionary<string, List<TestInfo>>();
-            Parallel.ForEach(webTestInfoGetters, (webGetter) =>
+            if (_cachedWebTestInfos == null)
             {
-                var testInfos = webGetter.ProcessTestInfos().ToList();
-                webTestInfos.Add(((WebTestInfoGetter)webGetter).CompanyName, testInfos);
-            });
-            return webTestInfos;
+                IEnumerable<IWebTestInfoGetter> webTestInfoGetters = CreateWebTestInfoGetters();
+                var webTestInfos = new Dictionary<string, List<TestInfo>>();
+                Parallel.ForEach(webTestInfoGetters, (webGetter) =>
+                {
+                    var testInfos = webGetter.ProcessTestInfos().ToList();
+                    webTestInfos.Add(((WebTestInfoGetter) webGetter).CompanyName, testInfos);
+                });
+                _cachedWebTestInfos = webTestInfos;
+            }
+            return _cachedWebTestInfos;
         }
 
         public ActionResult Index()
@@ -44,23 +53,84 @@ namespace WebMain.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult About(string labs,
+            string categories,
+            string subCategories,
+            string tests)
         {
             var testInfos = GetTestInfos();
-            ViewBag["labNames"] = testInfos.Keys;
-            ViewBag["categories"] = GetCategories(testInfos);
-            ViewBag["subCategories"] = GetSubCategories(testInfos);
-            return View(testInfos);
+            return View(new PriceViewModel
+            {
+                TestInfosDictionary = testInfos,
+                Labs = new SelectList(testInfos.Keys.Select(l => new SelectListItem {Value = l, Text = l}), "Value", "Text"),
+                Categories = GetCategories(testInfos),
+                SubCategories = GetSubCategories(testInfos),
+                Tests = GetTests(testInfos),
+                FilteredTests = GetFilteredTests(testInfos, labs, categories, subCategories, tests)
+            });
         }
 
-        private List<string> GetSubCategories(Dictionary<string, List<TestInfo>> testInfos)
+        private List<TestInfo> GetFilteredTests(Dictionary<string, List<TestInfo>> testInfos, 
+            string labName = null,
+            string category = null,
+            string subCategory = null,
+            string test = null)
         {
-            throw new NotImplementedException();
+            var filteredTests = new List<TestInfo>();
+            foreach (var tests in testInfos.Values)
+            {
+                filteredTests.AddRange(tests);
+            }
+            if (!string.IsNullOrWhiteSpace(labName))
+            {
+                filteredTests = filteredTests.Where(t => t.CompanyName.ToLower() == labName.ToLower()).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                filteredTests = filteredTests.Where(t => t.Category.ToLower() == category.ToLower()).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(subCategory))
+            {
+                filteredTests = filteredTests.Where(t => t.SubCategory.ToLower() == subCategory.ToLower()).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(test))
+            {
+                filteredTests = filteredTests.Where(t => t.InnerCode.ToLower() == test.ToLower()).ToList();
+            }
+            return filteredTests;
         }
 
-        private List<string> GetCategories(Dictionary<string, List<TestInfo>> testInfos)
+        private SelectList GetTests(Dictionary<string, List<TestInfo>> testInfos)
         {
-            throw new NotImplementedException();
+            var testsList = new List<Tuple<string, string>>();
+            foreach (var tests in testInfos)
+            {
+                testsList.AddRange(tests.Value.Where(t => t.CompanyName.ToLower() == "synevo").Select(t => new Tuple<string, string>(t.InnerCode, t.Name)).Distinct());
+            }
+            testsList = testsList.Distinct().ToList();
+            return new SelectList(testsList.ConvertAll(t => new SelectListItem { Value = t.Item1, Text = t.Item2 }), "Value", "Text");
+        }
+
+        private SelectList GetSubCategories(Dictionary<string, List<TestInfo>> testInfos)
+        {
+            var subCategories = new List<string>();
+            foreach (var tests in testInfos)
+            {
+                subCategories.AddRange(tests.Value.Select(t => t.SubCategory).Distinct());
+            }
+            subCategories = subCategories.Distinct().ToList();
+            return new SelectList(subCategories.ConvertAll(t => new SelectListItem { Value = t, Text = t }), "Value", "Text");
+        }
+
+        private SelectList GetCategories(Dictionary<string, List<TestInfo>> testInfos)
+        {
+            var categories = new List<string>();
+            foreach (var tests in testInfos)
+            {
+                categories.AddRange(tests.Value.Select(t => t.Category).Distinct());
+            }
+            categories = categories.Distinct().ToList();
+            return new SelectList(categories.ConvertAll(t => new SelectListItem {Value = t, Text = t}), "Value", "Text");
         }
 
         public ActionResult Contact()

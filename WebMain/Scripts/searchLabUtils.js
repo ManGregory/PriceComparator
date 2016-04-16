@@ -420,6 +420,10 @@ function getSearchForm() {
     return document.getElementById("searchForm");
 }
 
+function getSearchFormLabs() {
+    return document.getElementById("searchFormLabs");
+}
+
 function clearSearchMarkers() {
     for (var i = 0; i < searchMarkers.length; i++) {
         searchMarkers[i].setMap(null);
@@ -446,11 +450,14 @@ function processSearchForm(e) {
         if (status === google.maps.GeocoderStatus.OK) {
             var marker = new google.maps.Marker({
                 map: map,
+                title: address,
                 position: new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng())
             });
             searchMarkers.push(marker);
             map.setCenter(marker.position);
             showClosestMarkers(marker.position.lat(), marker.position.lng(), 1000);
+        } else {
+            alert('Невірна адреса');
         }
     });
     return false;
@@ -459,15 +466,20 @@ function processSearchForm(e) {
 function processLabNameChange(e) {
     if (e.preventDefault) e.preventDefault();
     clearMap();
-    var labNameSelect = getSearchForm().labName;
+    var labNameSelect = getSearchFormLabs().labName;
+    var showAll = false;
     for (var i = 0; i < labNameSelect.options.length; i++) {
         var labName = labNameSelect.options[i].value;
-        var markers = labMarkers[labName.toLowerCase()];
-        for (var j = 0; j < markers.length; j++) {
-            markers[j].setMap(labNameSelect.options[i].selected ? map : null);
-        }
-        if (markers.length > 0 && markers[0].map != null) {
-            map.setCenter(markers[0].position);
+        if (labName != "") {
+            var markers = labMarkers[labName.toLowerCase()];
+            for (var j = 0; j < markers.length; j++) {
+                markers[j].setMap(labNameSelect.options[i].selected || showAll ? map : null);
+            }
+            if (markers.length > 0 && markers[0].map != null) {
+                map.setCenter(markers[0].position);
+            }
+        } else {
+            showAll = labNameSelect.options[i].selected;
         }
     }
     return false;
