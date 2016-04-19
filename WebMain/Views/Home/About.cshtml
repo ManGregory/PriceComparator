@@ -35,7 +35,7 @@
         </div>
         <div class="col-md-3">
             <input type="submit" name="submitButton" value="Пошук" class="btn btn-default" />
-            <input type="submit" name="submitButton" value="Новий пошук" class="btn btn-default" onclick=" clearform() " />
+            <button type="button" name="submitButton" value="Новий пошук" class="btn btn-default" onclick=" clearForm() " >Новий пошук</button>
         </div>
     }
 </div>
@@ -97,6 +97,7 @@
             $("#SubCategories option:first").prop("selected", "selected");
             $("#Tests option:selected").prop("selected", false);
             $("#Tests option:first").prop("selected", "selected");
+            return false;
         }
     </script>
 }
