@@ -1,6 +1,7 @@
 ﻿@using Antlr.Runtime.Tree
 @model WebMain.Models.PriceViewModel
 
+<h3>_________________</h3>
 <h3 class="text-center">Клінічні дослідження, що проводяться в медичних лабораторіях міста Києва</h3>
 <br/>
 <div class="row">
@@ -33,8 +34,8 @@
             @Html.DropDownListFor(m => m.Tests, Model.Tests, string.Empty, new { @class = "form-control" })
         </div>
         <div class="col-md-3">
-            <input type="submit" value="Пошук" class="btn btn-default" />
-            <button type="button" class="btn btn-default" onclick=" clearForm() ">Новий пошук</button>
+            <input type="submit" name="submitButton" value="Пошук" class="btn btn-default" />
+            <input type="submit" name="submitButton" value="Новий пошук" class="btn btn-default" onclick=" clearform() " />
         </div>
     }
 </div>
@@ -80,6 +81,7 @@
             </tbody>
         </table>
     </div>
+    <img src="~/Content/orderedList9.png" class="col-md-12 left" />
 </div>
 
 @section scripts
@@ -95,7 +97,6 @@
             $("#SubCategories option:first").prop("selected", "selected");
             $("#Tests option:selected").prop("selected", false);
             $("#Tests option:first").prop("selected", "selected");
-            return false;
         }
     </script>
 }

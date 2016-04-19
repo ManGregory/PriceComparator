@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Mvc;
 using System.Web.Razor.Parser;
 using Microsoft.Ajax.Utilities;
@@ -30,11 +31,10 @@ namespace WebMain.Controllers
             };
         }
 
-        private Dictionary<string, List<TestInfo>> _cachedWebTestInfos = null;
-
         private Dictionary<string, List<TestInfo>> GetTestInfos()
         {
-            if (_cachedWebTestInfos == null)
+            var cachedWebTestInfos = HttpContext.Cache["webTestInfos"];
+            if (cachedWebTestInfos == null)
             {
                 IEnumerable<IWebTestInfoGetter> webTestInfoGetters = CreateWebTestInfoGetters();
                 var webTestInfos = new Dictionary<string, List<TestInfo>>();
@@ -43,9 +43,10 @@ namespace WebMain.Controllers
                     var testInfos = webGetter.ProcessTestInfos().ToList();
                     webTestInfos.Add(((WebTestInfoGetter) webGetter).CompanyName, testInfos);
                 });
-                _cachedWebTestInfos = webTestInfos;
+                cachedWebTestInfos = webTestInfos;
+                HttpContext.Cache["webTestInfos"] = cachedWebTestInfos;
             }
-            return _cachedWebTestInfos;
+            return (Dictionary<string, List<TestInfo>>)cachedWebTestInfos;
         }
 
         public ActionResult Index()
@@ -56,13 +57,14 @@ namespace WebMain.Controllers
         public ActionResult About(string labs,
             string categories,
             string subCategories,
-            string tests)
+            string tests,
+            string submitButton)
         {
             var testInfos = GetTestInfos();
             return View(new PriceViewModel
             {
                 TestInfosDictionary = testInfos,
-                Labs = new SelectList(testInfos.Keys.Select(l => new SelectListItem {Value = l, Text = l}), "Value", "Text"),
+                Labs = new SelectList(testInfos.Keys.Select(l => new SelectListItem { Value = l, Text = l }), "Value", "Text"),
                 Categories = GetCategories(testInfos),
                 SubCategories = GetSubCategories(testInfos),
                 Tests = GetTests(testInfos),
