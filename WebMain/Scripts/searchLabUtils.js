@@ -469,7 +469,13 @@ function processSearchForm(e) {
     if (e.preventDefault) e.preventDefault();
     clearMap();
     var address = getSearchForm().searchInput.value;
-    geocoder.geocode({ 'address': address }, function (results, status) {
+    var request = {
+        'address': 'Киев, ' + address,
+        componentRestrictions : {
+            country : 'UA'
+        }
+    };
+    geocoder.geocode(request, function (results, status) {
         if (status === google.maps.GeocoderStatus.OK) {
             var marker = new google.maps.Marker({
                 map: map,
