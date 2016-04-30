@@ -1,9 +1,31 @@
 ﻿@using Antlr.Runtime.Tree
 @model WebMain.Models.PriceViewModel
 
-<h3>_________________</h3>
-<h3 class="text-center">Клінічні дослідження, що проводяться в медичних лабораторіях міста Києва</h3>
+
+<div class="jumbotron">
+<img src="~/Content/mn.JPEG " class="left; col-md-12 " /></div>
+
+<div style="color: #8B0000">
+<h2 class="text-center">Клінічні дослідження, що проводяться в медичних лабораторіях міста Києва</h2>
+</div>
+
+
 <br/>
+
+<ul class="lablinks">
+        <li><a href="http://www.synevo.ua/uk/analizy/vse-analizy">Synevo</a></li>
+        <li><a href="http://dila.ua/ua/pricelist/index.html">Dila</a></li>
+        <li><a href="http://dnk-lab.com.ua/price.php">Dnklab</a></li>
+        <li><a href="http://uldc.com.ua/uk/analizy-ciny/itemlist/category/100000007-laboratorni-doslidzhennya.html">ULDC</a></li>
+        <li><a href="http://medlabtest.ua/ua/patients/analizy_i_zeny/po_nazvaniyu/">Medlabtest</a></li>
+        <li><a href="http://www.bioplus.com.ua/pricelist.html">Bioplus</a></li>
+        <li><a href="http://nikolab.com.ua/price/">Nikolab</a></li>
+    </ul>
+
+<br/>
+<br/>
+
+
 <div class="row">
     <div class="col-md-2">
         Назва лабораторії
@@ -40,37 +62,48 @@
     }
 </div>
 <br/>
+
+
+
+
+
+
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-bordered table-hover">
+        <table class="table table-bordered table-hover"; style="color: indigo;">
+
             <caption>
                 <h3>Вартість та терміни виконнаня лабораторних досліджень в м. Київ</h3>
             </caption>
             <thead>
-                <tr>
+                <tr style="background-color:#E8E8E8; color: indigo;">
+
+
+
+
                     <td><b>Назва медичної лабораторії</b></td>
                     <td><b>Назва клінічного дослідження</b></td>
-                    <td><b>Звичайне виконання</b></td>
-                    <td><b>Вартість клінічного дослідження звичайного</b></td>
-                    <td><b>Термінове виконання</b></td>
-                    <td><b>Вартість клінічного дослідження термінового</b></td>
+                    <td><b>Звичайне виконання, дні</b></td>
+                    <td><b>Вартість клінічного дослідження звичайного, грн.</b></td>
+                    <td><b>Термінове виконання, дні</b></td>
+                    <td><b>Вартість клінічного дослідження термінового, грн.</b></td>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var test in Model.FilteredTests)
                 {
                     <tr>
-                        <td><b>@test.CompanyName</b></td>
-                        <td>@test.Name</td>
-                        <td>@test.Term</td>
-                        <td>
+                        <td style="background-color:#E8E8E8; color: #8B0000"><b>@test.CompanyName</b></td>
+                        <td style="background-color:#F5F5F5; color: indigo">@test.Name</td>
+                        <td style="background-color:#F5F5F5; color: indigo" >@test.Term</td>
+                        <td style="background-color:#F5F5F5; color: indigo">
                             @if (test.Price != -1)
                             {
                                 @test.Price
                             }
                         </td>
-                        <td>@test.UrgentTerm</td>
-                        <td>
+                        <td style="background-color:#F5F5F5; color: indigo">@test.UrgentTerm</td>
+                        <td style="background-color:#F5F5F5; color: indigo">
                             @if (test.UrgentPrice != -1)
                             {
                                 @test.UrgentPrice
@@ -81,18 +114,6 @@
             </tbody>
         </table>
     </div>
-    
-    <ul class="lablinks">
-        <li><a href="http://www.synevo.ua/uk/analizy/vse-analizy">Synevo</a></li>
-        <li><a href="http://dila.ua/ua/pricelist/index.html">Dila</a></li>
-        <li><a href="http://dnk-lab.com.ua/price.php">Dnklab</a></li>
-        <li><a href="http://uldc.com.ua/uk/analizy-ciny/itemlist/category/100000007-laboratorni-doslidzhennya.html">ULDC</a></li>
-        <li><a href="http://medlabtest.ua/ua/patients/analizy_i_zeny/po_nazvaniyu/">Medlabtest</a></li>
-        <li><a href="http://www.bioplus.com.ua/pricelist.html">Bioplus</a></li>
-        <li><a href="http://nikolab.com.ua/price/">Nikolab</a></li>
-    </ul>
-
-    <img src="~/Content/orderedList9.png" class="col-md-12 left" />
 </div>
 
 @section scripts
