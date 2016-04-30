@@ -1,7 +1,6 @@
 ﻿@using Antlr.Runtime.Tree
 @model WebMain.Models.PriceViewModel
 
-
 <div class="jumbotron">
 <img src="~/Content/mn.JPEG " class="left; col-md-12 " /></div>
 
@@ -9,22 +8,20 @@
 <h2 class="text-center">Клінічні дослідження, що проводяться в медичних лабораторіях міста Києва</h2>
 </div>
 
-
 <br/>
 
 <ul class="lablinks">
-        <li><a href="http://www.synevo.ua/uk/analizy/vse-analizy">Synevo</a></li>
-        <li><a href="http://dila.ua/ua/pricelist/index.html">Dila</a></li>
-        <li><a href="http://dnk-lab.com.ua/price.php">Dnklab</a></li>
-        <li><a href="http://uldc.com.ua/uk/analizy-ciny/itemlist/category/100000007-laboratorni-doslidzhennya.html">ULDC</a></li>
-        <li><a href="http://medlabtest.ua/ua/patients/analizy_i_zeny/po_nazvaniyu/">Medlabtest</a></li>
-        <li><a href="http://www.bioplus.com.ua/pricelist.html">Bioplus</a></li>
-        <li><a href="http://nikolab.com.ua/price/">Nikolab</a></li>
-    </ul>
+    <li><a href="http://www.synevo.ua/uk/analizy/vse-analizy">Synevo</a></li>
+    <li><a href="http://dila.ua/ua/pricelist/index.html">Dila</a></li>
+    <li><a href="http://dnk-lab.com.ua/price.php">Dnklab</a></li>
+    <li><a href="http://uldc.com.ua/uk/analizy-ciny/itemlist/category/100000007-laboratorni-doslidzhennya.html">ULDC</a></li>
+    <li><a href="http://medlabtest.ua/ua/patients/analizy_i_zeny/po_nazvaniyu/">Medlabtest</a></li>
+    <li><a href="http://www.bioplus.com.ua/pricelist.html">Bioplus</a></li>
+    <li><a href="http://nikolab.com.ua/price/">Nikolab</a></li>
+</ul>
 
 <br/>
 <br/>
-
 
 <div class="row">
     <div class="col-md-2">
@@ -63,11 +60,6 @@
 </div>
 <br/>
 
-
-
-
-
-
 <div class="row">
     <div class="col-md-12">
         <table class="table table-bordered table-hover"; style="color: indigo;">
@@ -77,10 +69,6 @@
             </caption>
             <thead>
                 <tr style="background-color:#E8E8E8; color: indigo;">
-
-
-
-
                     <td><b>Назва медичної лабораторії</b></td>
                     <td><b>Назва клінічного дослідження</b></td>
                     <td><b>Звичайне виконання, дні</b></td>
@@ -131,5 +119,23 @@
             $("#Tests option:first").prop("selected", "selected");
             return false;
         }
+
+        $(function () {
+            function getRelationsJson() {
+                var result;
+                $.getJSON("/Home/GetPanelRelations",
+                    { },
+                    function (record) {
+                        result = record;
+                    });
+                return result;
+            }
+            
+            var categories = $('select[name=Categories]');
+            var subCategories = $('select[name=SubCategories]');
+            var tests = $('select[name=Tests]');
+
+            var relations = getRelationsJson();
+        });
     </script>
 }

@@ -468,9 +468,10 @@ function clearMap() {
 function processSearchForm(e) {
     if (e.preventDefault) e.preventDefault();
     clearMap();
-    var address = getSearchForm().searchInput.value;
+    var searchForm = getSearchForm();
+    var address = 'Київ, ' + searchForm.Streets.value + ', ' + searchForm.searchHome.value;
     var request = {
-        'address': 'Киев, ' + address,
+        'address': address,
         componentRestrictions : {
             country : 'UA'
         }

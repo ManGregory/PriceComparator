@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Caching;
 using System.Web.Mvc;
-using System.Web.Razor.Parser;
-using Microsoft.Ajax.Utilities;
 using PriceComparator.Concrete;
 using PriceComparator.Interfaces;
 using WebMain.Models;
@@ -18,7 +15,8 @@ namespace WebMain.Controllers
     {
         private IEnumerable<IWebTestInfoGetter> CreateWebTestInfoGetters()
         {
-            string pathToPredefined = HttpContext.Server.MapPath("~/Content/analysis.txt");
+            string pathToPredefined = HttpContext.Server.MapPath("~/Content/analysis.txt");            
+
             return new IWebTestInfoGetter[]
             {
                 new SynevoWebTestInfoGetter(pathToPredefined, "http://www.synevo.ua/uk/analizy/vse-analizy"),
@@ -137,7 +135,33 @@ namespace WebMain.Controllers
 
         public ActionResult Contact()
         {
-            return View();
+            return View(new SearchLabViewModel
+            {
+                Streets = GetStreets()
+            });
+        }
+
+        private SelectList GetStreets()
+        {
+            var pathToStreets = HttpContext.Server.MapPath("~/Content/streets.txt");
+            var cachedStreets = HttpContext.Cache["cachedStreets"];
+            if (cachedStreets == null)
+            {
+                var streets = System.IO.File.ReadLines(pathToStreets, Encoding.GetEncoding(1251));
+                HttpContext.Cache["cachedStreets"] =
+                    new SelectList(streets.Select(s => new SelectListItem {Value = s.Trim(), Text = s.Trim()}), "Value", "Text");
+            }
+            return (SelectList) HttpContext.Cache["cachedStreets"];
+        }
+
+        public ActionResult GetPanelRelations()
+        {
+            var testInfos = GetTestInfos();
+            var categories = GetCategories(testInfos);
+            var subCategories = GetSubCategories(testInfos);
+            var tests = GetTests(testInfos);
+            return Json(new { }, 
+                JsonRequestBehavior.AllowGet);
         }
     }
 }
