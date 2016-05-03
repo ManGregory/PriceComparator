@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using WebMain.Models;
 
@@ -53,7 +52,12 @@ namespace WebMain.Controllers
         {
             try
             {
-                // TODO: Add insert logic here
+                var recall = collection["recall"];
+                var labName = collection["labs"];
+                if (!string.IsNullOrWhiteSpace(recall) && !string.IsNullOrWhiteSpace(labName))
+                {
+                    InsertRecall(labName, recall);
+                }
 
                 return RedirectToAction("Index");
             }
@@ -61,6 +65,13 @@ namespace WebMain.Controllers
             {
                 return View();
             }   
+        }
+
+        private void InsertRecall(string labName, string recall)
+        {
+            string pathToRecalls = HttpContext.Server.MapPath("~/Content/recalls.txt");
+            System.IO.File.AppendAllText(pathToRecalls,
+                string.Format("{0}~{1}{2}", labName, recall.Replace(Environment.NewLine, " ").Replace("~", " "), Environment.NewLine));
         }
     }
 }
