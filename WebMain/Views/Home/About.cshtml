@@ -138,17 +138,9 @@
         }
 
         function filterLists(comboBoxNum) {
-            var categories = $('#Categories');
-            var subCategories = $('#SubCategories');
-            var tests = $('#Tests');
             var selectedCategory = $("#Categories option:selected").text();
             var selectedSubCategory = $("#SubCategories option:selected").text();
-            var items = null;
-            if (comboBoxNum == 0) {
-                items = getRelationsJson(selectedCategory, null, 0);
-            } else if (comboBoxNum == 1) {
-                items = getRelationsJson(selectedCategory, selectedSubCategory, 1);
-            }
+            getRelationsJson(selectedCategory, comboBoxNum == 0 ? null : selectedSubCategory, comboBoxNum);
         }        
     </script>
 }
