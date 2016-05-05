@@ -64,8 +64,8 @@ namespace WebMain.Controllers
                 TestInfosDictionary = testInfos,
                 Labs = new SelectList(testInfos.Keys.Select(l => new SelectListItem { Value = l, Text = l }), "Value", "Text"),
                 Categories = GetCategories(testInfos),
-                SubCategories = GetSubCategories(testInfos),
-                Tests = GetTests(testInfos),
+                SubCategories = string.IsNullOrWhiteSpace(subCategories) ? new SelectList(new List<SelectListItem>()) : GetSubCategories2(testInfos, categories),
+                Tests = string.IsNullOrWhiteSpace(tests) ? new SelectList(new List<SelectListItem>()) : GetTests2(testInfos, categories, subCategories),
                 FilteredTests = GetFilteredTests(testInfos, labs, categories, subCategories, tests)
             });
         }
@@ -100,26 +100,62 @@ namespace WebMain.Controllers
             return filteredTests;
         }
 
-        private SelectList GetTests(Dictionary<string, List<TestInfo>> testInfos)
+        private SelectList GetTests2(Dictionary<string, List<TestInfo>> testInfos, string category, string subCategory)
         {
             var testsList = new List<Tuple<string, string>>();
             foreach (var tests in testInfos)
             {
-                testsList.AddRange(tests.Value.Where(t => t.CompanyName.ToLower() == "synevo").Select(t => new Tuple<string, string>(t.InnerCode, t.Name)).Distinct());
+                testsList.AddRange(
+                    tests.Value.Where(
+                        t => t.CompanyName.ToLower() == "synevo" && t.Category.ToLower() == category.ToLower() &&
+                             t.SubCategory.ToLower() == subCategory.ToLower())
+                    .Select(t => new Tuple<string, string>(t.InnerCode, t.Name))
+                    .Distinct());
             }
             testsList = testsList.Distinct().ToList();
             return new SelectList(testsList.ConvertAll(t => new SelectListItem { Value = t.Item1, Text = t.Item2 }), "Value", "Text");
         }
 
-        private SelectList GetSubCategories(Dictionary<string, List<TestInfo>> testInfos)
+        private List<Tuple<string, string>> GetTests(Dictionary<string, List<TestInfo>> testInfos, string category, string subCategory)
+        {
+            var testsList = new List<Tuple<string, string>>(new[] { new Tuple<string, string>(string.Empty, string.Empty) });
+            foreach (var tests in testInfos)
+            {
+                testsList.AddRange(
+                    tests.Value.Where(
+                        t =>
+                            t.CompanyName.ToLower() == "synevo" && t.Category.ToLower() == category.ToLower() &&
+                            t.SubCategory.ToLower() == subCategory.ToLower())
+                        .Select(t => new Tuple<string, string>(t.InnerCode, t.Name)).Distinct());
+            }
+            return testsList.Distinct().ToList();
+        }
+
+        private SelectList GetSubCategories2(Dictionary<string, List<TestInfo>> testInfos, string category)
         {
             var subCategories = new List<string>();
             foreach (var tests in testInfos)
             {
-                subCategories.AddRange(tests.Value.Select(t => t.SubCategory).Distinct());
+                subCategories.AddRange(
+                    tests.Value.Where(t => t.Category.ToLower() == category.ToLower())
+                        .Select(t => t.SubCategory)
+                        .Distinct());
             }
             subCategories = subCategories.Distinct().ToList();
             return new SelectList(subCategories.ConvertAll(t => new SelectListItem { Value = t, Text = t }), "Value", "Text");
+        }
+
+        private List<Tuple<string, string>> GetSubCategories(Dictionary<string, List<TestInfo>> testInfos, string category)
+        {
+            var subCategories = new List<Tuple<string, string>>(new[] { new Tuple<string, string>(string.Empty, string.Empty)});
+            foreach (var tests in testInfos)
+            {
+                subCategories.AddRange(
+                    tests.Value.Where(t => t.Category.ToLower() == category.ToLower())
+                        .Select(t => new Tuple<string, string>(t.SubCategory, t.SubCategory))
+                        .Distinct());
+            }
+            return subCategories.Distinct().ToList();
         }
 
         private SelectList GetCategories(Dictionary<string, List<TestInfo>> testInfos)
@@ -154,13 +190,17 @@ namespace WebMain.Controllers
             return (SelectList) HttpContext.Cache["cachedStreets"];
         }
 
-        public ActionResult GetPanelRelations()
+        public ActionResult GetPanelRelations(string category = null, string subCategory = null)
         {
             var testInfos = GetTestInfos();
-            var categories = GetCategories(testInfos);
-            var subCategories = GetSubCategories(testInfos);
-            var tests = GetTests(testInfos);
-            return Json(new { }, 
+            var items = new List<Tuple<string,string>>();
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                items.AddRange(!string.IsNullOrWhiteSpace(subCategory)
+                    ? GetTests(testInfos, category, subCategory)
+                    : GetSubCategories(testInfos, category));
+            }
+            return Json(new { Items = items }, 
                 JsonRequestBehavior.AllowGet);
         }
     }

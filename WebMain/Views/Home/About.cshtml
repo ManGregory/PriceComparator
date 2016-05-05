@@ -44,10 +44,10 @@
             @Html.DropDownListFor(m => m.Labs, Model.Labs, string.Empty, new { @class = "form-control" })
         </div>
         <div class="col-md-2">
-            @Html.DropDownListFor(m => m.Categories, Model.Categories, string.Empty, new { @class = "form-control" })
+            @Html.DropDownListFor(m => m.Categories, Model.Categories, string.Empty, new { @class = "form-control", @onchange="filterLists(0)" })
         </div>
         <div class="col-md-2">
-            @Html.DropDownListFor(m => m.SubCategories, Model.SubCategories, string.Empty, new { @class = "form-control" })
+            @Html.DropDownListFor(m => m.SubCategories, Model.SubCategories, string.Empty, new { @class = "form-control", @onchange = "filterLists(1)" })
         </div>
         <div class="col-md-3">
             @Html.DropDownListFor(m => m.Tests, Model.Tests, string.Empty, new { @class = "form-control" })
@@ -119,23 +119,36 @@
             $("#Tests option:first").prop("selected", "selected");
             return false;
         }
-
-        $(function () {
-            function getRelationsJson() {
-                var result;
-                $.getJSON("/Home/GetPanelRelations",
-                    { },
-                    function (record) {
-                        result = record;
+        
+        function getRelationsJson(category, subCategory, comboBoxNum) {
+            $.getJSON("/Home/GetPanelRelations",
+                {
+                    category : category, 
+                    subCategory : subCategory
+                },
+                function (response) {
+                    var selectName = comboBoxNum == 1 ? "#Tests" : "#SubCategories";
+                    $(selectName).empty();
+                    $(response.Items).each(function() {
+                        var option = $('<option />');
+                        option.attr('value', this.Item1).text(this.Item2);
+                        $(selectName).append(option);
                     });
-                return result;
-            }
-            
-            var categories = $('select[name=Categories]');
-            var subCategories = $('select[name=SubCategories]');
-            var tests = $('select[name=Tests]');
+                });
+        }
 
-            var relations = getRelationsJson();
-        });
+        function filterLists(comboBoxNum) {
+            var categories = $('#Categories');
+            var subCategories = $('#SubCategories');
+            var tests = $('#Tests');
+            var selectedCategory = $("#Categories option:selected").text();
+            var selectedSubCategory = $("#SubCategories option:selected").text();
+            var items = null;
+            if (comboBoxNum == 0) {
+                items = getRelationsJson(selectedCategory, null, 0);
+            } else if (comboBoxNum == 1) {
+                items = getRelationsJson(selectedCategory, selectedSubCategory, 1);
+            }
+        }        
     </script>
 }
