@@ -64,8 +64,8 @@ namespace WebMain.Controllers
                 TestInfosDictionary = testInfos,
                 Labs = new SelectList(testInfos.Keys.Select(l => new SelectListItem { Value = l, Text = l }), "Value", "Text"),
                 Categories = GetCategories(testInfos),
-                SubCategories = string.IsNullOrWhiteSpace(subCategories) ? new SelectList(new List<SelectListItem>()) : GetSubCategories2(testInfos, categories),
-                Tests = string.IsNullOrWhiteSpace(tests) ? new SelectList(new List<SelectListItem>()) : GetTests2(testInfos, categories, subCategories),
+                SubCategories = GetSubCategories2(testInfos, categories),
+                Tests = GetTests2(testInfos, categories, subCategories),
                 FilteredTests = GetFilteredTests(testInfos, labs, categories, subCategories, tests)
             });
         }
@@ -107,12 +107,12 @@ namespace WebMain.Controllers
             {
                 testsList.AddRange(
                     tests.Value.Where(
-                        t => t.CompanyName.ToLower() == "synevo" && t.Category.ToLower() == category.ToLower() &&
-                             t.SubCategory.ToLower() == subCategory.ToLower())
+                        t => t.CompanyName.ToLower() == "synevo" && (string.IsNullOrWhiteSpace(category) || t.Category.ToLower() == category.ToLower()) &&
+                             (string.IsNullOrWhiteSpace(subCategory) || t.SubCategory.ToLower() == subCategory.ToLower()))
                     .Select(t => new Tuple<string, string>(t.InnerCode, t.Name))
                     .Distinct());
             }
-            testsList = testsList.Distinct().ToList();
+            testsList = testsList.Distinct().OrderBy(t => t.Item2).ToList();
             return new SelectList(testsList.ConvertAll(t => new SelectListItem { Value = t.Item1, Text = t.Item2 }), "Value", "Text");
         }
 
@@ -124,11 +124,11 @@ namespace WebMain.Controllers
                 testsList.AddRange(
                     tests.Value.Where(
                         t =>
-                            t.CompanyName.ToLower() == "synevo" && t.Category.ToLower() == category.ToLower() &&
-                            t.SubCategory.ToLower() == subCategory.ToLower())
+                            t.CompanyName.ToLower() == "synevo" && (string.IsNullOrWhiteSpace(category) || t.Category.ToLower() == category.ToLower()) &&
+                            (string.IsNullOrWhiteSpace(subCategory) || t.SubCategory.ToLower() == subCategory.ToLower()))
                         .Select(t => new Tuple<string, string>(t.InnerCode, t.Name)).Distinct());
             }
-            return testsList.Distinct().ToList();
+            return testsList.Distinct().OrderBy(t => t.Item2).ToList();
         }
 
         private SelectList GetSubCategories2(Dictionary<string, List<TestInfo>> testInfos, string category)
@@ -137,12 +137,12 @@ namespace WebMain.Controllers
             foreach (var tests in testInfos)
             {
                 subCategories.AddRange(
-                    tests.Value.Where(t => t.Category.ToLower() == category.ToLower())
+                    tests.Value.Where(t => string.IsNullOrWhiteSpace(category) || t.Category.ToLower() == category.ToLower())
                         .Select(t => t.SubCategory)
                         .Distinct());
             }
-            subCategories = subCategories.Distinct().ToList();
-            return new SelectList(subCategories.ConvertAll(t => new SelectListItem { Value = t, Text = t }), "Value", "Text");
+            subCategories = subCategories.Distinct().OrderBy(t => t).ToList();
+            return new SelectList(subCategories.ConvertAll(t => new SelectListItem { Value = t, Text = GetSubCategoryName(t) }).OrderBy(t => t.Text), "Value", "Text");
         }
 
         private List<Tuple<string, string>> GetSubCategories(Dictionary<string, List<TestInfo>> testInfos, string category)
@@ -151,11 +151,11 @@ namespace WebMain.Controllers
             foreach (var tests in testInfos)
             {
                 subCategories.AddRange(
-                    tests.Value.Where(t => t.Category.ToLower() == category.ToLower())
-                        .Select(t => new Tuple<string, string>(t.SubCategory, t.SubCategory))
+                    tests.Value.Where(t => (string.IsNullOrWhiteSpace(category) || t.Category.ToLower() == category.ToLower()))
+                        .Select(t => new Tuple<string, string>(t.SubCategory, GetSubCategoryName(t.SubCategory)))
                         .Distinct());
             }
-            return subCategories.Distinct().ToList();
+            return subCategories.Distinct().OrderBy(t => t.Item2).ToList();
         }
 
         private SelectList GetCategories(Dictionary<string, List<TestInfo>> testInfos)
@@ -166,7 +166,67 @@ namespace WebMain.Controllers
                 categories.AddRange(tests.Value.Select(t => t.Category).Distinct());
             }
             categories = categories.Distinct().ToList();
-            return new SelectList(categories.ConvertAll(t => new SelectListItem {Value = t, Text = t}), "Value", "Text");
+            return new SelectList(categories.ConvertAll(t => new SelectListItem {Value = t, Text = GetCategoryName(t)}).OrderBy(t => t.Text), "Value", "Text");
+        }
+
+        private string GetCategoryName(string category)
+        {
+            var name = string.Empty;
+            switch (category)
+            {
+                case "Панель гормональна" :
+                    name = "1. " + category;
+                    break;
+                case "Панель загальноклінічних досліджень":
+                    name = "2. " + category;
+                    break;
+                case "Панель біохімічних досліджень" :
+                    name = "3. " + category;
+                    break;
+            }
+            return name;
+        }
+
+        private string GetSubCategoryName(string subCategory)
+        {
+            var name = string.Empty;
+            switch (subCategory)
+            {
+                case "Клінічна хімія":
+                    name = "3.1. " + subCategory;
+                    break;
+                case "Панель вуглеводного обміну":
+                    name = "1.5. " + subCategory;
+                    break;
+                case "Панель надниркових гормонів":
+                    name = "1.4. " + subCategory;
+                    break;
+                case "Оцінка гемостазу":
+                    name = "2.2. " + subCategory;
+                    break;
+                case "Ліпідний обмін":
+                    name = "3.2. " + subCategory;
+                    break;
+                case "Аналіз крові":
+                    name = "2.1. " + subCategory;
+                    break;
+                case "Панель тиреоїдна":
+                    name = "1.1. " + subCategory;
+                    break;
+                case "Панель репродуктивна":
+                    name = "1.3. " + subCategory;
+                    break;
+                case "Панель фосфорно-кальцієвого обміну":
+                    name = "1.2. " + subCategory;
+                    break;
+                case "Діагностика анемії":
+                    name = "3.3. " + subCategory;
+                    break;
+                case "Вітаміни":
+                    name = "3.4. " + subCategory;
+                    break;
+            }
+            return name;            
         }
 
         public ActionResult Contact()
@@ -190,16 +250,13 @@ namespace WebMain.Controllers
             return (SelectList) HttpContext.Cache["cachedStreets"];
         }
 
-        public ActionResult GetPanelRelations(string category = null, string subCategory = null)
+        public ActionResult GetPanelRelations(int comboBoxNum, string category = null, string subCategory = null)
         {
             var testInfos = GetTestInfos();
             var items = new List<Tuple<string,string>>();
-            if (!string.IsNullOrWhiteSpace(category))
-            {
-                items.AddRange(!string.IsNullOrWhiteSpace(subCategory)
-                    ? GetTests(testInfos, category, subCategory)
-                    : GetSubCategories(testInfos, category));
-            }
+            items.AddRange(comboBoxNum == 1
+                ? GetTests(testInfos, category, subCategory)
+                : GetSubCategories(testInfos, category));
             return Json(new { Items = items }, 
                 JsonRequestBehavior.AllowGet);
         }

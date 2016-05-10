@@ -107,8 +107,7 @@
 @section scripts
 {
     <script>
-        function clearForm()
-        {
+        function clearForm() {
             $("#Labs option:selected").prop("selected", false);
             $("#Labs option:first").prop("selected", "selected");
             $("#Categories option:selected").prop("selected", false);
@@ -119,14 +118,15 @@
             $("#Tests option:first").prop("selected", "selected");
             return false;
         }
-        
+
         function getRelationsJson(category, subCategory, comboBoxNum) {
             $.getJSON("/Home/GetPanelRelations",
                 {
-                    category : category, 
-                    subCategory : subCategory
+                    comboBoxNum: comboBoxNum,
+                    category: category,
+                    subCategory: subCategory
                 },
-                function (response) {
+                function(response) {
                     var selectName = comboBoxNum == 1 ? "#Tests" : "#SubCategories";
                     $(selectName).empty();
                     $(response.Items).each(function() {
@@ -138,9 +138,12 @@
         }
 
         function filterLists(comboBoxNum) {
-            var selectedCategory = $("#Categories option:selected").text();
-            var selectedSubCategory = $("#SubCategories option:selected").text();
-            getRelationsJson(selectedCategory, comboBoxNum == 0 ? null : selectedSubCategory, comboBoxNum);
-        }        
+            var selectedCategory = $("#Categories option:selected").val();
+            var selectedSubCategory = $("#SubCategories option:selected").val();
+            if (comboBoxNum != 1) {
+                getRelationsJson(selectedCategory, selectedSubCategory, 0);
+            }
+            getRelationsJson(selectedCategory, selectedSubCategory, 1);
+        }
     </script>
 }
