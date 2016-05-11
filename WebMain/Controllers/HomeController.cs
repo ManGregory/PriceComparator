@@ -22,7 +22,7 @@ namespace WebMain.Controllers
                 new SynevoWebTestInfoGetter(pathToPredefined, "http://www.synevo.ua/uk/analizy/vse-analizy"),
                 new DilaWebTestInfoGetter(pathToPredefined, "http://dila.ua/ua/pricelist/index.html"),
                 new DnklabWebTestInfoGetter(pathToPredefined, "http://dnk-lab.com.ua/price.php"),
-                new BioplusWebTestInfoGetter(pathToPredefined, "http://www.bioplus.com.ua/pricelist.html"),
+                //new BioplusWebTestInfoGetter(pathToPredefined, "http://www.bioplus.com.ua/pricelist.html"),
                 new NikolabWebTestInfoGetter(pathToPredefined, "http://nikolab.com.ua/price/"),
                 new UldcWebTestInfoGetter(pathToPredefined, "http://uldc.com.ua/uk/analizy-ciny/itemlist/category/100000007-laboratorni-doslidzhennya.html"),
                 new MedialabtestWebTestInfoGetter(pathToPredefined, "http://medlabtest.ua/ua/patients/analizy_i_zeny/po_nazvaniyu/")
@@ -62,7 +62,7 @@ namespace WebMain.Controllers
             return View(new PriceViewModel
             {
                 TestInfosDictionary = testInfos,
-                Labs = new SelectList(testInfos.Keys.Select(l => new SelectListItem { Value = l, Text = l }), "Value", "Text"),
+                Labs = new SelectList(testInfos.Keys.Select(l => new SelectListItem { Value = l, Text = l }).OrderBy(l => l.Value), "Value", "Text"),
                 Categories = GetCategories(testInfos),
                 SubCategories = GetSubCategories2(testInfos, categories),
                 Tests = GetTests2(testInfos, categories, subCategories),

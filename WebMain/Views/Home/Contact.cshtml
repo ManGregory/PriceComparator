@@ -39,16 +39,16 @@
             @using (Html.BeginForm("Contact", "Home", FormMethod.Get, new { @class = "form-inline", @id = "searchFormLabs" }))
             {
                 <label for="labName" class="control-label">Назва медичної лабораторії: </label>
-                <select name="labName" class="form-control" onchange=" processLabNameChange(this) ">
-                    <option></option>
-                    <option>Synevo</option>
-                    <option>Dila</option>
-                    <option>DNK</option>
-                    <option>Bioplus</option>
-                    <option>ULDC</option>
-                    <option>Nikolab</option>
-                    <option>Medlabtest</option>
-                </select>
+    <select name="labName" class="form-control" onchange=" processLabNameChange(this) ">
+        <option></option>
+        <option>Dila</option>
+        <option>Dnk</option>
+        @*<option>Bioplus</option>*@
+        <option>Medlabtest</option>
+        <option>Nikolab</option>        
+        <option>Synevo</option>
+        <option>Uldc</option>
+    </select>
             }
             <br />
             <div id="map-canvas">

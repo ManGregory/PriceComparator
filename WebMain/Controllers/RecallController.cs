@@ -37,14 +37,14 @@ namespace WebMain.Controllers
         {
             return new SelectList(new []
             {
-                new SelectListItem {Value = "Bioplus", Text = "Bioplus"},
+                //new SelectListItem {Value = "Bioplus", Text = "Bioplus"},
                 new SelectListItem {Value = "Medlabtest", Text = "Medlabtest"},
                 new SelectListItem {Value = "Nikolab", Text = "Nikolab"},
                 new SelectListItem {Value = "Dnk", Text = "Dnk"},
                 new SelectListItem {Value = "Dila", Text = "Dila"},
                 new SelectListItem {Value = "Synevo", Text = "Synevo"},
                 new SelectListItem {Value = "Uldc", Text = "Uldc"}
-            }, "Value", "Text");
+            }.OrderBy(s => s.Value), "Value", "Text");
         }
 
         [HttpPost]

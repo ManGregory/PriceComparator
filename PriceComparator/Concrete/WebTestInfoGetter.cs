@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -91,7 +92,13 @@ namespace PriceComparator.Concrete
         protected virtual HtmlDocument CreateHtmlDocument(WebClient client)
         {
             var htmlDoc = new HtmlDocument();
-            htmlDoc.Load(new StringReader(client.DownloadString(Url)));
+            try
+            {
+                htmlDoc.Load(new StringReader(client.DownloadString(Url)));
+            }
+            catch (Exception e)
+            {                
+            }
             return htmlDoc;
         }
 
