@@ -20,7 +20,7 @@ namespace WebMain.Controllers
             return new IWebTestInfoGetter[]
             {
                 new SynevoWebTestInfoGetter(pathToPredefined, "http://www.synevo.ua/uk/analizy/vse-analizy"),
-                new DilaWebTestInfoGetter(pathToPredefined, "http://dila.ua/ua/pricelist/index.html"),
+                new DilaWebTestInfoGetter(pathToPredefined, "https://dila.ua/price.html"),
                 new DnklabWebTestInfoGetter(pathToPredefined, "http://dnk-lab.com.ua/price.php"),
                 //new BioplusWebTestInfoGetter(pathToPredefined, "http://www.bioplus.com.ua/pricelist.html"),
                 new NikolabWebTestInfoGetter(pathToPredefined, "http://nikolab.com.ua/price/"),

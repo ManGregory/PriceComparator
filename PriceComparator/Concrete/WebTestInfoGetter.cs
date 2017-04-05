@@ -51,7 +51,11 @@ namespace PriceComparator.Concrete
             var testInfos = new List<TestInfo>();            
             using (var client = CreateWebClient())
             {
-                testInfos.AddRange(ProcessTestInfos(GetHtmlTestRows(CreateHtmlDocument(client))));
+                var rows = GetHtmlTestRows(CreateHtmlDocument(client));
+                if (rows != null)
+                {
+                    testInfos.AddRange(ProcessTestInfos(rows));   
+                }                
             }
             return testInfos;
         }
@@ -94,7 +98,8 @@ namespace PriceComparator.Concrete
             var htmlDoc = new HtmlDocument();
             try
             {
-                htmlDoc.Load(new StringReader(client.DownloadString(Url)));
+                var plainHtml = client.DownloadString(Url);
+                htmlDoc.Load(new StringReader(plainHtml));
             }
             catch (Exception e)
             {                

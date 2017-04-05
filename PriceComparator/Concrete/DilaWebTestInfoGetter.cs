@@ -14,11 +14,6 @@ namespace PriceComparator.Concrete
             get { return "Dila"; }
         }
 
-        protected override WebClient CreateWebClient()
-        {
-            return new WebClient {Encoding = Encoding.GetEncoding(1251)};
-        }
-
         protected override decimal GetPrice(HtmlNode testRow)
         {
             decimal price;
@@ -52,7 +47,7 @@ namespace PriceComparator.Concrete
 
         protected override IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc)
         {
-            var testRows = htmlDoc.DocumentNode.SelectNodes("//tr[count(td)=3]");
+            var testRows = htmlDoc.DocumentNode.SelectNodes("//div[@class='analizes-list-table-line']");
             return testRows;
         }
 
