@@ -8,8 +8,12 @@ using PriceComparator.Utils;
 
 namespace PriceComparator.Concrete
 {
-    public class UldcWebTestInfoGetter : WebTestInfoGetter
+    public class UldcTestInfoProvider : TestInfoProvider
     {
+        public UldcTestInfoProvider(string url) : base(url)
+        {
+        }
+
         public override string CompanyName
         {
             get { return "Uldc"; }
@@ -41,10 +45,6 @@ namespace PriceComparator.Concrete
         protected override IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc)
         {
             return htmlDoc.DocumentNode.SelectNodes("//table[@class='uksus']//tr[count(td)=6]");
-        }
-
-        public UldcWebTestInfoGetter(string pathToPredefined, string url) : base(pathToPredefined, url)
-        {
         }
     }
 }

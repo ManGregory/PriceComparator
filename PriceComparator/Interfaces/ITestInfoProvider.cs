@@ -3,8 +3,8 @@ using PriceComparator.Concrete;
 
 namespace PriceComparator.Interfaces
 {
-    public interface IWebTestInfoGetter
+    public interface ITestInfoProvider
     {
-        IEnumerable<TestInfo> ProcessTestInfos();        
+        IEnumerable<TestInfo> GetTestInfos();
     }
 }

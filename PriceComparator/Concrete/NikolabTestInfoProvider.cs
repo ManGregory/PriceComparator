@@ -7,8 +7,12 @@ using HtmlAgilityPack;
 
 namespace PriceComparator.Concrete
 {
-    public class NikolabWebTestInfoGetter : WebTestInfoGetter
+    public class NikolabTestInfoProvider : TestInfoProvider
     {
+        public NikolabTestInfoProvider(string url) : base(url)
+        {
+        }
+
         public override string CompanyName
         {
             get { return "Nikolab"; }
@@ -38,10 +42,6 @@ namespace PriceComparator.Concrete
         protected override IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc)
         {
             return htmlDoc.DocumentNode.SelectNodes("//div[@class='entry-content article']//tr[count(td)=4]");
-        }
-
-        public NikolabWebTestInfoGetter(string pathToPredefined, string url) : base(pathToPredefined, url)
-        {
         }
     }
 }

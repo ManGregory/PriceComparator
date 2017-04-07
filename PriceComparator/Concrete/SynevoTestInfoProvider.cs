@@ -5,15 +5,15 @@ using PriceComparator.Utils;
 
 namespace PriceComparator.Concrete
 {
-    public class SynevoWebTestInfoGetter : WebTestInfoGetter
+    public class SynevoTestInfoProvider : TestInfoProvider
     {
+        public SynevoTestInfoProvider(string url) : base(url)
+        {
+        }
+
         public override string CompanyName
         {
             get { return "Synevo"; }
-        }
-
-        public SynevoWebTestInfoGetter(string pathToPredefined, string url) : base(pathToPredefined, url)
-        {
         }
 
         protected override IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc)

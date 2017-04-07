@@ -7,8 +7,12 @@ using PriceComparator.Utils;
 
 namespace PriceComparator.Concrete
 {
-    public class DilaWebTestInfoGetter : WebTestInfoGetter
+    public class DilaTestInfoProvider : TestInfoProvider
     {
+        public DilaTestInfoProvider(string url) : base(url)
+        {
+        }
+
         public override string CompanyName
         {
             get { return "Dila"; }
@@ -49,10 +53,6 @@ namespace PriceComparator.Concrete
         {
             var testRows = htmlDoc.DocumentNode.SelectNodes("//div[@class='analizes-list-table-line']");
             return testRows;
-        }
-
-        public DilaWebTestInfoGetter(string pathToPredefined, string url) : base(pathToPredefined, url)
-        {
         }
     }
 }

@@ -9,13 +9,13 @@ using PriceComparator.Interfaces;
 
 namespace PriceComparator.Concrete
 {
-    public abstract class WebTestInfoGetter : IWebTestInfoGetter
+    public abstract class TestInfoProvider : ITestInfoProvider
     {        
         public string Url { get; set; }
 
         public virtual string CompanyName { get; set; }
 
-        protected IEnumerable<TestInfo> PredefinedTestInfos;
+        public PredefinedTestInfoFinder PredefinedTestInfoFinder { get; set; }
 
         protected abstract decimal GetPrice(HtmlNode testRow);
 
@@ -40,26 +40,10 @@ namespace PriceComparator.Concrete
 
         protected abstract IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc);
 
-        protected WebTestInfoGetter(string pathToPredefined, string url)
+        protected TestInfoProvider(string url)
         {
             Url = url;
-            PredefinedTestInfos = PredefinedTestGetter.GetPredefinedTestInfos(pathToPredefined);
         }
-
-        public IEnumerable<TestInfo> ProcessTestInfos()
-        {
-            var testInfos = new List<TestInfo>();            
-            using (var client = CreateWebClient())
-            {
-                var rows = GetHtmlTestRows(CreateHtmlDocument(client));
-                if (rows != null)
-                {
-                    testInfos.AddRange(ProcessTestInfos(rows));   
-                }                
-            }
-            return testInfos;
-        }
-
         protected virtual IEnumerable<TestInfo> ProcessTestInfos(IEnumerable<HtmlNode> testRows)
         {
             return testRows.Select(CreateTestInfo).Where(t => t!= null && !t.IsEmpty());
@@ -77,7 +61,7 @@ namespace PriceComparator.Concrete
                 UrgentPrice = GetUrgentPrice(testRow),
                 UrgentTerm = GetUrgentTerm(testRow)
             };
-            var predefinedTestInfo = PredefinedTestGetter.Find(testInfo, PredefinedTestInfos);
+            var predefinedTestInfo = PredefinedTestInfoFinder.Find(testInfo);
             if (predefinedTestInfo != null)
             {
                 MergeTestInfo(testInfo, predefinedTestInfo);
@@ -110,6 +94,20 @@ namespace PriceComparator.Concrete
         protected virtual WebClient CreateWebClient()
         {
             return new WebClient { Encoding = Encoding.UTF8 };
+        }
+
+        public IEnumerable<TestInfo> GetTestInfos()
+        {
+            var testInfos = new List<TestInfo>();
+            using (var client = CreateWebClient())
+            {
+                var rows = GetHtmlTestRows(CreateHtmlDocument(client));
+                if (rows != null)
+                {
+                    testInfos.AddRange(ProcessTestInfos(rows));
+                }
+            }
+            return testInfos;
         }
     }
 }

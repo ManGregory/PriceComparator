@@ -47,19 +47,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Concrete\BioplusWebTestInfoGetter.cs" />
-    <Compile Include="Concrete\DilaWebTestInfoGetter.cs" />
-    <Compile Include="Concrete\DnklabWebTestInfoGetter.cs" />
-    <Compile Include="Concrete\MedialabtestWebTestInfoGetter.cs" />
-    <Compile Include="Concrete\NikolabWebTestInfoGetter.cs" />
-    <Compile Include="Concrete\PredefinedTestGetter.cs" />
-    <Compile Include="Concrete\SynevoWebTestInfoGetter.cs" />
-    <Compile Include="Concrete\UldcWebTestInfoGetter.cs" />
-    <Compile Include="Interfaces\IWebTestInfoGetter.cs" />
+    <Compile Include="Concrete\BioplusTestInfoProvider.cs" />
+    <Compile Include="Concrete\DilaTestInfoProvider.cs" />
+    <Compile Include="Concrete\DnklabTestInfoProvider.cs" />
+    <Compile Include="Concrete\MedialabtestTestInfoProvider.cs" />
+    <Compile Include="Concrete\NikolabTestInfoProvider.cs" />
+    <Compile Include="Concrete\PredefinedTestInfoFinder.cs" />
+    <Compile Include="Concrete\SynevoTestInfoProvider.cs" />
+    <Compile Include="Concrete\UldcTestInfoProvider.cs" />
+    <Compile Include="Interfaces\ITestInfoProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Concrete\TestInfo.cs" />
-    <Compile Include="Concrete\WebTestInfoGetter.cs" />
+    <Compile Include="Concrete\TestInfoProvider.cs" />
     <Compile Include="Utils\ConvertExtensions.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
   </ItemGroup>

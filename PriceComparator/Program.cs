@@ -12,12 +12,12 @@ namespace PriceComparator
     {
         static void Main(string[] args)
         {            
-            /*IEnumerable<IWebTestInfoGetter> webTestInfoGetters = CreateWebTestInfoGetters();
+            /*IEnumerable<ITestInfoProvider> webTestInfoGetters = CreateWebTestInfoGetters();
             var webTestInfos = new Dictionary<string, List<TestInfo>>();
             Parallel.ForEach(webTestInfoGetters, (webGetter) =>
             {
-                var testInfos = webGetter.ProcessTestInfos().ToList();
-                webTestInfos.Add(((WebTestInfoGetter)webGetter).CompanyName, testInfos);
+                var testInfos = webGetter.GetTestInfos().ToList();
+                webTestInfos.Add(((TestInfoProvider)webGetter).CompanyName, testInfos);
                 //foreach (var testInfo in testInfos)
                 //{
                 //    Console.WriteLine(testInfo.ToString());

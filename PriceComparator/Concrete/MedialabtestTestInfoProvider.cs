@@ -5,8 +5,12 @@ using PriceComparator.Utils;
 
 namespace PriceComparator.Concrete
 {
-    public class MedialabtestWebTestInfoGetter : WebTestInfoGetter
+    public class MedialabtestTestInfoProvider : TestInfoProvider
     {
+        public MedialabtestTestInfoProvider(string url) : base(url)
+        {
+        }
+
         public override string CompanyName
         {
             get { return "Medlabtest"; }
@@ -36,10 +40,6 @@ namespace PriceComparator.Concrete
         protected override IEnumerable<HtmlNode> GetHtmlTestRows(HtmlDocument htmlDoc)
         {
             return htmlDoc.DocumentNode.SelectNodes("//div[@class='price-list']//tr[@class='item']");
-        }
-
-        public MedialabtestWebTestInfoGetter(string pathToPredefined, string url) : base(pathToPredefined, url)
-        {
         }
     }
 }

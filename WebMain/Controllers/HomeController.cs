@@ -13,19 +13,19 @@ namespace WebMain.Controllers
 {
     public class HomeController : Controller
     {
-        private IEnumerable<IWebTestInfoGetter> CreateWebTestInfoGetters()
+        private IEnumerable<ITestInfoProvider> CreateWebTestInfoGetters()
         {
             string pathToPredefined = HttpContext.Server.MapPath("~/Content/analysis.txt");            
 
-            return new IWebTestInfoGetter[]
+            return new ITestInfoProvider[]
             {
-                new SynevoWebTestInfoGetter(pathToPredefined, "http://www.synevo.ua/uk/analizy/vse-analizy"),
-                new DilaWebTestInfoGetter(pathToPredefined, "https://dila.ua/price.html"),
-                new DnklabWebTestInfoGetter(pathToPredefined, "http://dnk-lab.com.ua/price.php"),
-                //new BioplusWebTestInfoGetter(pathToPredefined, "http://www.bioplus.com.ua/pricelist.html"),
-                new NikolabWebTestInfoGetter(pathToPredefined, "http://nikolab.com.ua/price/"),
-                new UldcWebTestInfoGetter(pathToPredefined, "http://uldc.com.ua/uk/analizy-ciny/itemlist/category/100000007-laboratorni-doslidzhennya.html"),
-                new MedialabtestWebTestInfoGetter(pathToPredefined, "http://medlabtest.ua/ua/patients/analizy_i_zeny/po_nazvaniyu/")
+                new SynevoTestInfoProvider("http://www.synevo.ua/uk/analizy/vse-analizy"),
+                new DilaTestInfoProvider("https://dila.ua/price.html"),
+                new DnklabTestInfoProvider("http://dnk-lab.com.ua/price.php"),
+                //new BioplusTestInfoProvider(pathToPredefined, "http://www.bioplus.com.ua/pricelist.html"),
+                new NikolabTestInfoProvider("http://nikolab.com.ua/price/"),
+                new UldcTestInfoProvider("http://uldc.com.ua/uk/analizy-ciny/itemlist/category/100000007-laboratorni-doslidzhennya.html"),
+                new MedialabtestTestInfoProvider("http://medlabtest.ua/ua/patients/analizy_i_zeny/po_nazvaniyu/")
             };
         }
 
@@ -34,12 +34,12 @@ namespace WebMain.Controllers
             var cachedWebTestInfos = HttpContext.Cache["webTestInfos"];
             if (cachedWebTestInfos == null)
             {
-                IEnumerable<IWebTestInfoGetter> webTestInfoGetters = CreateWebTestInfoGetters();
+                IEnumerable<ITestInfoProvider> webTestInfoGetters = CreateWebTestInfoGetters();
                 var webTestInfos = new Dictionary<string, List<TestInfo>>();
                 Parallel.ForEach(webTestInfoGetters, (webGetter) =>
                 {
-                    var testInfos = webGetter.ProcessTestInfos().ToList();
-                    webTestInfos.Add(((WebTestInfoGetter) webGetter).CompanyName, testInfos);
+                    var testInfos = webGetter.GetTestInfos().ToList();
+                    webTestInfos.Add(((TestInfoProvider) webGetter).CompanyName, testInfos);
                 });
                 cachedWebTestInfos = webTestInfos;
                 HttpContext.Cache["webTestInfos"] = cachedWebTestInfos;
